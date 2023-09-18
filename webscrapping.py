@@ -49,6 +49,15 @@ def verifica_img_gif(html):
             return True
     return False
 
+def verifica_lang(html):
+    soup = BeautifulSoup(html, "html.parser")
+    html_tag = soup.find("html")
+    if html_tag:
+        lang = html_tag.get("lang")
+        if lang:
+            return True
+    return False
+
 def main():
     if len(sys.argv) != 2:
         print("Uso: python3 webscrapping.py <URL>")
@@ -67,6 +76,7 @@ def main():
     resultados_css_js = verifica_css_js(html)
     script_e_noscript = verifica_script_e_noscript(html)
     img_gif_presente = verifica_img_gif(html)
+    lang_presente = verifica_lang(html)
 
     if tags_ordenadas and resultados_css_js:
         print(f"As tags 'html', 'head' e 'body' estão presentes e bem ordenadas em {url}")
@@ -100,6 +110,10 @@ def main():
     else:
         print("Nenhuma tag <img> com atributo 'src' terminando em '.gif' foi encontrada.")
 
+    if lang_presente:
+        print("A tag <html> possui o atributo 'lang' preenchido.")
+    else:
+        print("A tag <html> não possui o atributo 'lang' preenchido.")
 
 if __name__ == "__main__":
     main()
