@@ -26,6 +26,12 @@ def verifica_css_js(html):
     js_links = [script["src"] for script in soup.find_all("script", src=True)]
     return css_inline, js_inline, css_links, js_links
 
+def verifica_script_e_noscript(html):
+    soup = BeautifulSoup(html, "html.parser")
+    script_tags = soup.find_all("script")
+    noscript_tags = soup.find_all("noscript")
+    return len(script_tags) > 0, len(noscript_tags) > 0
+
 if len(sys.argv) != 2:
     print("Uso: python3 webscrapping.py <URL>")
     sys.exit(1)
@@ -37,6 +43,7 @@ html = faz_requisicao(url)
 if html:
     tags_ordenadas = verifica_tags_e_ordenacao(html)
     resultados_css_js = verifica_css_js(html)
+    script_e_noscript = verifica_script_e_noscript(html)
 
     if tags_ordenadas and resultados_css_js:
         print(f"As tags 'html', 'head' e 'body' estão presentes e bem ordenadas em {url}")
@@ -48,3 +55,13 @@ if html:
     else:
         print(f"As tags 'html', 'head' e 'body' não foram encontradas ou não estão bem ordenadas em {url}")
         print("Não foi possível verificar a presença de CSS e JS.")
+
+    script_presente, noscript_presente = script_e_noscript
+
+    if script_presente:
+        if noscript_presente:
+            print("A tag <script> está presente, e a tag <noscript> também está presente.")
+        else:
+            print("A tag <script> está presente, mas a tag <noscript> não está presente.")
+    else:
+        print("A tag <script> não foi encontrada no HTML.")
