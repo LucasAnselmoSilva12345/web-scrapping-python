@@ -40,6 +40,15 @@ def verifica_script_e_noscript(html):
     noscript_tags = soup.find_all("noscript")
     return len(script_tags) > 0, len(noscript_tags) > 0
 
+def verifica_img_gif(html):
+    soup = BeautifulSoup(html, "html.parser")
+    img_tags = soup.find_all("img")
+    for img in img_tags:
+        src = img.get("src")
+        if src and src.endswith(".gif"):
+            return True
+    return False
+
 def main():
     if len(sys.argv) != 2:
         print("Uso: python3 webscrapping.py <URL>")
@@ -57,6 +66,7 @@ def main():
     elementos_presentes = verifica_elementos(html, elementos)
     resultados_css_js = verifica_css_js(html)
     script_e_noscript = verifica_script_e_noscript(html)
+    img_gif_presente = verifica_img_gif(html)
 
     if tags_ordenadas and resultados_css_js:
         print(f"As tags 'html', 'head' e 'body' estão presentes e bem ordenadas em {url}")
@@ -84,6 +94,12 @@ def main():
             print(f"A tag <{elemento}> foi encontrada {quantidade} vez(es) no HTML.")
         else:
             print(f"A tag <{elemento}> não foi encontrada no HTML.")
+    
+    if img_gif_presente:
+        print("Pelo menos uma tag <img> com atributo 'src' terminando em '.gif' foi encontrada.")
+    else:
+        print("Nenhuma tag <img> com atributo 'src' terminando em '.gif' foi encontrada.")
+
 
 if __name__ == "__main__":
     main()
