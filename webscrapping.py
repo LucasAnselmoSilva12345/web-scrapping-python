@@ -16,6 +16,14 @@ def verifica_tags_e_ordenacao(html):
     tags = soup.find_all(["html", "head", "body"])
     return tags == sorted(tags, key=lambda x: html.find(str(x)))
 
+def verifica_elementos(html, elementos):
+    soup = BeautifulSoup(html, "html.parser")
+    elementos_presentes = {}
+    for elemento in elementos:
+        elementos_tags = soup.find_all(elemento)
+        elementos_presentes[elemento] = len(elementos_tags)
+    return elementos_presentes
+
 def verifica_css_js(html):
     soup = BeautifulSoup(html, "html.parser")
     css_tags = soup.find_all("style")
@@ -32,16 +40,21 @@ def verifica_script_e_noscript(html):
     noscript_tags = soup.find_all("noscript")
     return len(script_tags) > 0, len(noscript_tags) > 0
 
-if len(sys.argv) != 2:
-    print("Uso: python3 webscrapping.py <URL>")
-    sys.exit(1)
+def main():
+    if len(sys.argv) != 2:
+        print("Uso: python3 webscrapping.py <URL>")
+        sys.exit(1)
 
-url = sys.argv[1]
+    url = sys.argv[1]
 
-html = faz_requisicao(url)
+    html = faz_requisicao(url)
 
-if html:
+    if not html:
+        return
+
     tags_ordenadas = verifica_tags_e_ordenacao(html)
+    elementos = ["embed", "applet", "blink", "marquee"]
+    elementos_presentes = verifica_elementos(html, elementos)
     resultados_css_js = verifica_css_js(html)
     script_e_noscript = verifica_script_e_noscript(html)
 
@@ -65,3 +78,12 @@ if html:
             print("A tag <script> está presente, mas a tag <noscript> não está presente.")
     else:
         print("A tag <script> não foi encontrada no HTML.")
+
+    for elemento, quantidade in elementos_presentes.items():
+        if quantidade > 0:
+            print(f"A tag <{elemento}> foi encontrada {quantidade} vez(es) no HTML.")
+        else:
+            print(f"A tag <{elemento}> não foi encontrada no HTML.")
+
+if __name__ == "__main__":
+    main()
