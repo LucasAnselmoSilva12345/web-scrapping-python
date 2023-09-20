@@ -15,17 +15,24 @@ def encontrar_e_imprimir_atributo_alt(img):
     alt_text = img.get('alt', None)
     return alt_text
 
+def verificar_valores_alt(img):
+    valores_proibidos = ["figura", "imagem", "descrição"]
+    alt_text = encontrar_e_imprimir_atributo_alt(img)
+    if alt_text:
+        src = img.get('src', 'N/A')
+        print(f"Valor do atributo 'alt' na imagem \"{src}\": {alt_text}")
+        if alt_text.lower() not in valores_proibidos:
+            return True
+    return False
+
 def contar_atributos_alt(imagens):
     atributos_alt_encontrados = 0
     atributos_alt_preenchidos = 0
 
     for img in imagens:
-        alt_text = encontrar_e_imprimir_atributo_alt(img)
-        if alt_text:
-            src = img.get('src', 'N/A')
-            print(f"Valor do atributo 'alt' na imagem \"{src}\": {alt_text}")
+        if verificar_valores_alt(img):
             atributos_alt_encontrados += 1
-            if alt_text.strip():# Verifica se o valor não está vazio ou contém apenas espaços em branco
+            if img['alt'].strip():# Verifica se o valor não está vazio ou contém apenas espaços em branco
                 atributos_alt_preenchidos += 1
     
     return atributos_alt_encontrados, atributos_alt_preenchidos
