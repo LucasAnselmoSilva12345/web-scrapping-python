@@ -39,7 +39,7 @@ def contar_atributos_alt(imagens):
 
 def main():
     if len(sys.argv) != 2:
-        print("Uso: python3 webscrapping.py <URL>")
+        print("Uso: python3 imagens.py <URL>")
         sys.exit(1)
 
     url = sys.argv[1]
